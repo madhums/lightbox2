@@ -58,7 +58,8 @@
     // Attach event handlers to the new DOM elements. click click click
     Lightbox.prototype.build = function() {
       var self = this;
-      $("<div id='lightboxOverlay' class='lightboxOverlay'></div><div id='lightbox' class='lightbox'><div class='lb-outerContainer'><div class='lb-container'><img class='lb-image' src='' /><div class='lb-nav'><a class='lb-prev' href='' ></a><a class='lb-next' href='' ></a></div><div class='lb-loader'><a class='lb-cancel'></a></div><a class='lb-download' href='' target='_blank'></a></div></div><div class='lb-dataContainer'><div class='lb-data'><div class='lb-details'><span class='lb-caption'></span><span class='lb-number'></span></div><div class='lb-closeContainer'><a class='lb-close'></a></div></div></div></div>").appendTo($('body'));
+
+      $("<div id='lightboxOverlay' class='lightboxOverlay'></div><div id='lightbox' class='lightbox'><div class='lb-outerContainer'><div class='lb-container'><img class='lb-image' src='' /><div class='lb-nav'><a class='lb-prev' href='' ></a><a class='lb-next' href='' ></a></div><div class='lb-loader'><a class='lb-cancel'></a></div><a class='lb-rotate-left' href=''></a><a class='lb-rotate-right' href=''></a><a class='lb-download' href='' target='_blank'></a></div></div><div class='lb-dataContainer'><div class='lb-data'><div class='lb-details'><span class='lb-caption'></span><span class='lb-number'></span></div><div class='lb-closeContainer'><a class='lb-close'></a></div></div></div></div>").appendTo($('body'));
 
       // Cache jQuery objects
       this.$lightbox       = $('#lightbox');
@@ -137,10 +138,16 @@
       var imageNumber = 0;
 
       function addToAlbum($link) {
-        self.album.push({
-          link: $link.attr('href'),
-          title: $link.attr('data-title') || $link.attr('title')
-        });
+        var data = {}
+        data.link = $link.attr('href');
+        data.title = $link.attr('data-title') || $link.attr('title');
+        data.rotation = false;
+        if($link.data('rotate-right') && $link.data('rotate-left')){
+          data.rotateRightLink = $link.data('rotate-right');
+          data.rotateLeftLink = $link.data('rotate-left');
+          data.rotation = true;
+        }
+        self.album.push(data);
       }
 
       // Support both data-lightbox attribute and rel attribute implementations
@@ -189,11 +196,13 @@
       this.disableKeyboardNav();
       var $image = this.$lightbox.find('.lb-image');
       var $downloadLink = this.$lightbox.find('.lb-download');
+      var $rotateRightLink = this.$lightbox.find('.lb-rotate-right');
+      var $rotateLeftLink = this.$lightbox.find('.lb-rotate-left');
 
       this.$overlay.fadeIn(this.options.fadeDuration);
 
       $('.lb-loader').fadeIn('slow');
-      this.$lightbox.find('.lb-image, .lb-nav, .lb-prev, .lb-next, .lb-dataContainer, .lb-numbers, .lb-caption').hide();
+      this.$lightbox.find('.lb-image, .lb-nav, .lb-prev, .lb-next, .lb-dataContainer, .lb-numbers, .lb-caption, .lb-rotate-right, .lb-rotate-left').hide();
 
       this.$outerContainer.addClass('animating');
 
@@ -203,6 +212,16 @@
         var $preloader, imageHeight, imageWidth, maxImageHeight, maxImageWidth, windowHeight, windowWidth;
         $image.attr('src', self.album[imageNumber].link);
         $downloadLink.attr('href', self.album[imageNumber].link);
+        if(self.album[imageNumber].rotation){
+          $rotateRightLink.attr('href', self.album[imageNumber].rotateRightLink)
+          $rotateLeftLink.attr('href', self.album[imageNumber].rotateLeftLink)
+          $rotateRightLink.show();
+          $rotateLeftLink.show();
+        } else {
+          $rotateRightLink.hide();
+          $rotateLeftLink.hide();
+        }
+
 
         $preloader = $(preloader);
 
