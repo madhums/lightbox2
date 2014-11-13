@@ -209,7 +209,7 @@ body:after {
   opacity: 1;
 }
 
-.lb-download{
+.lb-download, .lb-rotate-right, .lb-rotate-left{
   border-radius: 5px;
   display: block;
   height: 40px;
@@ -223,6 +223,25 @@ body:after {
   right: 15px;
   z-index: 11;
 }
-.lb-download:hover{
+
+.lb-rotate-left{
+  top:15px;
+  left:15px;
+  background-image: url(../img/rotate-left.png);
+  background-position-x: 50%;
+  background-position-y: 50%;
+  background-repeat: no-repeat;
+}
+
+.lb-rotate-right{
+  top:15px;
+  right:15px;
+  background-image: url(../img/rotate-right.png);
+  background-position-x: 50%;
+  background-position-y: 50%;
+  background-repeat: no-repeat;
+}
+
+.lb-download:hover, .lb-rotate-right:hover, .lb-rotate-left:hover{
   opacity: 1;
 }
